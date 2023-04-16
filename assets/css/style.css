@@ -1,0 +1,6 @@
+.header {
+  width: 100vw;
+  background-image: linear-gradient(to right, #b19cd9, #9370db, #5d478b);
+  color: white;
+  padding: 20px 0;
+}
