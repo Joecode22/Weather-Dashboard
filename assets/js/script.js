@@ -1,5 +1,7 @@
+var APIKey = "0a4b94a5f4f88fe22b1db9a21f0ba2cc";
 //global variable to hold search city
 var city;
+var coords;
 // Add event listener to table
 const searchBtn = document.getElementById("search-submit");
 searchBtn.addEventListener("click", grabSearch);
@@ -24,7 +26,6 @@ function mkCityBtn(city) {
   cityBtn.classList.add('fs-4', 'ms-1', 'btn-primary', 'mb-3', 'w-75', 'p-2');
   cityBtn.textContent = city;
   aside.appendChild(cityBtn);
-  var APIKey = "0a4b94a5f4f88fe22b1db9a21f0ba2cc";
   var currentForcast = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
   fetchWeatherData(APIKey, currentForcast);
 };
@@ -36,5 +37,12 @@ function fetchWeatherData(APIKey, currentForcast) {
   })
   .then(function(data){
     console.log(data)
+    coords = [data.coord.lat, data.coord.lon];
+    console.log(coords); 
   })
+  return [data]
+}
+
+function fetchFiveDayForcast(){
+  fetch
 }
