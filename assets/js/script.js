@@ -39,10 +39,16 @@ function fetchWeatherData(APIKey, currentForcast) {
     console.log(data)
     coords = [data.coord.lat, data.coord.lon];
     console.log(coords); 
+    console.log(coords[0]); 
+    console.log(coords[1]); 
+    return [coords[0], coords[1], data]
   })
-  return [data]
 }
+const latitude = coords;
+const longitude = coords;
 
+var fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid={APIKey};
+`
 function fetchFiveDayForcast(){
   fetch
 }
