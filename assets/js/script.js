@@ -1,3 +1,8 @@
+// Script File for Weather Dashboard
+// Joseph McKinney
+// Challenf
+// 4/16/2023
+
 document.addEventListener("DOMContentLoaded", function() {
   //global variables
   var city;
@@ -15,6 +20,19 @@ document.addEventListener("DOMContentLoaded", function() {
   const searchBtn = document.getElementById("search-submit");
   searchBtn.addEventListener("click", main);
 
+  //Conversions
+  //Kelvin to Fahrenheit
+  function kelvinToFahrenheit(kelvin) {
+    return (kelvin - 273.15) * 9/5 + 32;
+  }
+  //Kelvin to Celsius
+  function kelvinToCelsius(kelvinTemp) {
+    return kelvinTemp - 273.15;
+  }
+  
+
+  
+
   async function main() {
     city = grabSearch();
     if (city) {
@@ -25,6 +43,13 @@ document.addEventListener("DOMContentLoaded", function() {
         fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
         fetchFiveDayForcast(fiveDayForcast);
         updateJumbotron(city, date, temperature, wind, humidity, iconURL)
+        // Create the heading
+        const fiveDayHeading = document.createElement('h2');
+        fiveDayHeading.textContent = 'Five Day Forecast';
+
+        // Append the heading to the container element
+        const container = document.getElementById('container');
+        container.appendChild(fiveDayHeading);
       } else {
         console.log("Invalid city name");
       }
@@ -67,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
       latitude = data.coord.lat;
       longitude = data.coord.lon;
       date = new Date(data.dt * 1000).toLocaleDateString();
-      temperature = data.main.temp;
+      temperature = Math.floor(kelvinToCelsius(data.main.temp));
       wind = data.wind.speed;
       humidity = data.main.humidity;
       iconCode = data.weather[0].icon;
@@ -113,5 +138,58 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("wind").textContent = `Wind: ${wind} MPH`;
     document.getElementById("humidity").textContent = `Humidity: ${humidity}%`;
   }
+
+  // Loop through the data and create a card for each day
+  for (let i = 0; i < data.list.length; i += 8) {
+    const day = data.list[i];
+
+    // Create the card element
+    const card = document.createElement('div');
+    card.classList.add('card');
+
+    // Create the card body element
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
+
+    // Create the date element
+    const date = document.createElement('h5');
+    date.classList.add('card-title');
+    date.textContent = new Date(day.dt * 1000).toLocaleDateString();
+
+    // Create the weather icon element
+    const icon = document.createElement('img');
+    icon.classList.add('card-img-top');
+    icon.src = `http://openweathermap.org/img/wn/${day.weather[0].icon}.png`;
+
+    // Create the temperature element
+    const temp = document.createElement('p');
+    temp.classList.add('card-text');
+    temp.textContent = `Temperature: ${kelvinToFahrenheit(day.main.temp)}°F`;
+
+    // Create the wind element
+    const wind = document.createElement('p');
+    wind.classList.add('card-text');
+    wind.textContent = `Wind: ${day.wind.speed} MPH`;
+
+    // Create the humidity element
+    const humidity = document.createElement('p');
+    humidity.classList.add('card-text');
+    humidity.textContent = `Humidity: ${day.main.humidity}%`;
+
+    // Append the elements to the card body
+    cardBody.appendChild(date);
+    cardBody.appendChild(icon);
+    cardBody.appendChild(temp);
+    cardBody.appendChild(wind);
+    cardBody.appendChild(humidity);
+
+    // Append the card body to the card
+    card.appendChild(cardBody);
+
+    // Append the card to the container element
+    const container = document.getElementById('container');
+    container.appendChild(card);
+}
+
   
 });
