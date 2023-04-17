@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
   var temperature;
   var wind;
   var humidity;
+  var iconCode;
+  var iconURL;
   // Todo: need to hide this key 
   const APIKey = "0bd6340dd436be54dde5c8bc47376fd9";
   const searchBtn = document.getElementById("search-submit");
@@ -22,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
         appendCityBtn(cityBtn);
         fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
         fetchFiveDayForcast(fiveDayForcast);
-        updateJumbotron(city, date, temperature, wind, humidity)
+        updateJumbotron(city, date, temperature, wind, humidity, iconURL)
       } else {
         console.log("Invalid city name");
       }
@@ -66,7 +68,11 @@ document.addEventListener("DOMContentLoaded", function() {
       longitude = data.coord.lon;
       date = new Date(data.dt * 1000).toLocaleDateString();
       temperature = data.main.temp;
-      wind = data.main.humidity;
+      wind = data.wind.speed;
+      humidity = data.main.humidity;
+      iconCode = data.weather[0].icon;
+      iconURL = `http://openweathermap.org/img/wn/${iconCode}.png`;
+
       return true;
     } catch (error) {
       console.error(`Error fetching weather data: ${error.message}`);
@@ -89,10 +95,23 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  function updateJumbotron (city, date, temperature, wind, humidity){
-    document.getElementById("city-date").textContent = `${city} (${date})`;
-    document.getElementById("temperature").textContent = `${temperature}°F`;
-    document.getElementById("wind").textContent = `${wind} MPH`;
-    document.getElementById("humidity").textContent = `${humidity}%`;
+  //this function updates the jumbotron
+  function updateJumbotron(city, date, temperature, wind, humidity, iconURL) {
+    const cityDate = document.getElementById("city-date");
+    cityDate.textContent = `${city} (${date})`;
+  
+    // Create an img element for the weather icon
+    const weatherIcon = document.createElement("img");
+    weatherIcon.id = "weather-icon";
+    weatherIcon.src = iconURL;
+    weatherIcon.alt = "Weather icon";
+  
+    // Append the weather icon to the heading
+    cityDate.appendChild(weatherIcon);
+  
+    document.getElementById("temperature").textContent = `Temp: ${temperature}°F`;
+    document.getElementById("wind").textContent = `Wind: ${wind} MPH`;
+    document.getElementById("humidity").textContent = `Humidity: ${humidity}%`;
   }
+  
 });
