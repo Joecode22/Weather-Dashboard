@@ -1,10 +1,21 @@
 .header {
   width: 100vw;
-  background-image: linear-gradient(to right, #b19cd9, #9370db, #5d478b);
+  /* background-image: linear-gradient(to right, #b19cd9, #9370db, #5d478b); */
+  background-image: linear-gradient(to right, rgba(177, 156, 217, 0.7), rgba(147, 112, 219, 0.7), rgba(93, 71, 139, 0.7));
   color: white;
   padding: 20px 0;
 }
 
 .line{
   width: 80%;
+}
+
+.background-image {
+  background-image: url('../images/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* Set the height and width of the element as needed */
+  height: 100vh;
+  width: 100%;
 }
