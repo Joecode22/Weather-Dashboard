@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const data = await response.json();
       console.log(data);
 
-      container.innerHTML = '';
+      
 
 
       // Loop through the data and create a card for each day
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Create the card element
         const card = document.createElement('div');
         card.classList.add('card', 'text-white', 'bg-primary', 'mb-3', 'mx-auto', 'weather-card');
-
+    
         // Create the card body element
         const cardBody = document.createElement('div');
         cardBody.classList.add('card-body', 'weather-card-body');
@@ -138,13 +138,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Create the weather icon element
         const icon = document.createElement('img');
-        icon.classList.add('card-img-top');
+        icon.classList.add('card-img-top', 'weather-icon');
         icon.src = `http://openweathermap.org/img/wn/${day.weather[0].icon}.png`;
+        icon.style.width = '50px'; // Adjust the icon size by changing this value
+        icon.style.float = 'left'; // Align the icon to the left
 
         // Create the temperature element
         const temp = document.createElement('p');
         temp.classList.add('card-text', 'fs-7');
-        temp.textContent = `Temperature: ${kelvinToFahrenheit(day.main.temp)}°F`;
+        temp.textContent = `Temp: ${kelvinToFahrenheit(day.main.temp)}°F`;
 
         // Create the wind element
         const wind = document.createElement('p');
