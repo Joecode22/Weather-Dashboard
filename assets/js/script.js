@@ -115,62 +115,67 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       const data = await response.json();
       console.log(data);
+
+      container.innerHTML = '';
+
+
       // Loop through the data and create a card for each day
       for (let i = 0; i < data.list.length; i += 8) {
         const day = data.list[i];
-      
+        
         // Create the card element
         const card = document.createElement('div');
-        card.classList.add('card');
-      
+        card.classList.add('card', 'text-white', 'bg-primary', 'mb-3', 'mx-auto', 'weather-card');
+
         // Create the card body element
         const cardBody = document.createElement('div');
-        cardBody.classList.add('card-body');
-      
+        cardBody.classList.add('card-body', 'weather-card-body');
+
         // Create the date element
         const date = document.createElement('h5');
-        date.classList.add('card-title');
+        date.classList.add('card-title', 'fs-6');
         date.textContent = new Date(day.dt * 1000).toLocaleDateString();
-      
+
         // Create the weather icon element
         const icon = document.createElement('img');
         icon.classList.add('card-img-top');
         icon.src = `http://openweathermap.org/img/wn/${day.weather[0].icon}.png`;
-      
+
         // Create the temperature element
         const temp = document.createElement('p');
-        temp.classList.add('card-text');
+        temp.classList.add('card-text', 'fs-7');
         temp.textContent = `Temperature: ${kelvinToFahrenheit(day.main.temp)}°F`;
-      
+
         // Create the wind element
         const wind = document.createElement('p');
-        wind.classList.add('card-text');
+        wind.classList.add('card-text', 'fs-7');
         wind.textContent = `Wind: ${day.wind.speed} MPH`;
-      
+
         // Create the humidity element
         const humidity = document.createElement('p');
-        humidity.classList.add('card-text');
+        humidity.classList.add('card-text', 'fs-7');
         humidity.textContent = `Humidity: ${day.main.humidity}%`;
-      
+
+        
         // Append the elements to the card body
         cardBody.appendChild(date);
         cardBody.appendChild(icon);
         cardBody.appendChild(temp);
         cardBody.appendChild(wind);
         cardBody.appendChild(humidity);
-      
+        
         // Append the card body to the card
         card.appendChild(cardBody);
-      
-        // Append the card to the container element
-        const container = document.getElementById('container');
+        
+        // Append the cardDeck to the container
         container.appendChild(card);
       }
-        
+          
     } catch (error) {
       console.error(`Error fetching five-day forecast: ${error.message}`);
     }
   }
+  
 
   //this function updates the jumbotron
   function updateJumbotron(city, date, temperature, wind, humidity, iconURL) {
