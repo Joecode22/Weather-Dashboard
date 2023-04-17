@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", function() {
   var latitude;
   var longitude;
   var fiveDayForcast;
+  var date; //get the date
+  var temperature;
+  var wind;
+  var humidity;
   // Todo: need to hide this key 
   const APIKey = "0bd6340dd436be54dde5c8bc47376fd9";
   const searchBtn = document.getElementById("search-submit");
@@ -18,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
         appendCityBtn(cityBtn);
         fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
         fetchFiveDayForcast(fiveDayForcast);
+        updateJumbotron(city, date, temperature, wind, humidity)
       } else {
         console.log("Invalid city name");
       }
@@ -57,9 +62,11 @@ document.addEventListener("DOMContentLoaded", function() {
         throw new Error(`API error: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
       latitude = data.coord.lat;
       longitude = data.coord.lon;
+      date = new Date(data.dt * 1000).toLocaleDateString();
+      temperature = data.main.temp;
+      wind = data.main.humidity;
       return true;
     } catch (error) {
       console.error(`Error fetching weather data: ${error.message}`);
@@ -80,5 +87,12 @@ document.addEventListener("DOMContentLoaded", function() {
     } catch (error) {
       console.error(`Error fetching five-day forecast: ${error.message}`);
     }
+  }
+
+  function updateJumbotron (city, date, temperature, wind, humidity){
+    document.getElementById("city-date").textContent = `${city} (${date})`;
+    document.getElementById("temperature").textContent = `${temperature}°F`;
+    document.getElementById("wind").textContent = `${wind} MPH`;
+    document.getElementById("humidity").textContent = `${humidity}%`;
   }
 });
