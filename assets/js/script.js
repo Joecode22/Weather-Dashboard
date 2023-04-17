@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
   var addedCities = []; // keep track of the cities added
 
   // Todo: need to hide this key 
-  const APIKey = "0bd6340dd436be54dde5c8bc47376fd9";
+  var myKey = config.API_KEY;
+  const APIKey = myKey;
   const searchBtn = document.getElementById("search-submit");
 
   //Event Listener for search button
@@ -229,5 +230,6 @@ document.addEventListener("DOMContentLoaded", function() {
       container.removeChild(container.firstChild);
     }
   }
+  //Load page based on info from local storage
   loadPage();
 });
