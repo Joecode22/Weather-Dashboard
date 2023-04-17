@@ -21,15 +21,16 @@
 }
 
 .card {
-  width: 18rem;
-  height: 18rem;
+  width: 9em;
+  height: 14rem;
 }
 
 .weather-card {
   max-width: 160px;
+  margin: 0.5rem;
 }
 
-.weather-card-body {
+/* .weather-card-body {
   padding: 0.5rem;
-}
+} */
 

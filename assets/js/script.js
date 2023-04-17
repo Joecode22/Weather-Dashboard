@@ -9,16 +9,21 @@ document.addEventListener("DOMContentLoaded", function() {
   var latitude;
   var longitude;
   var fiveDayForcast;
-  var date; //get the date
+  var date;
   var temperature;
   var wind;
   var humidity;
   var iconCode;
   var iconURL;
+
   // Todo: need to hide this key 
   const APIKey = "0bd6340dd436be54dde5c8bc47376fd9";
   const searchBtn = document.getElementById("search-submit");
-  searchBtn.addEventListener("click", main);
+  searchBtn.addEventListener("click", function(){
+    const searchText = document.getElementById("search-text");
+    const cityName = searchText.value.trim();
+    main(cityName);
+  });
 
   //Conversions
   //Kelvin to Fahrenheit
@@ -33,8 +38,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   
 
-  async function main() {
-    city = grabSearch();
+  async function main(city) {
+    // city = grabSearch();
     if (city) {
       const isValidCity = await fetchWeatherData(city);
       if (isValidCity) {
@@ -43,13 +48,6 @@ document.addEventListener("DOMContentLoaded", function() {
         fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
         fetchFiveDayForcast(fiveDayForcast);
         updateJumbotron(city, date, temperature, wind, humidity, iconURL)
-        // Create the heading
-        const fiveDayHeading = document.createElement('h2');
-        fiveDayHeading.textContent = 'Five Day Forecast';
-
-        // Append the heading to the container element
-        const container = document.getElementById('container');
-        container.appendChild(fiveDayHeading);
       } else {
         console.log("Invalid city name");
       }
@@ -68,6 +66,12 @@ document.addEventListener("DOMContentLoaded", function() {
     cityBtn.type = "submit";
     cityBtn.classList.add('fs-4', 'ms-1', 'btn-secondary', 'mb-3', 'w-75', 'p-2');
     cityBtn.textContent = city;
+
+    // Add an event listener to the city history button
+    cityBtn.addEventListener('click', () => {
+      main(city);
+    });
+
     return cityBtn;
   }
 
@@ -106,7 +110,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // This function fetches the five day forcast informatiion
-  // Todo: Note 5-day forcast information is provided in three hour blocks so we will need to manage that later
   async function fetchFiveDayForcast(fiveDayForcast) {
     try {
       const response = await fetch(fiveDayForcast);
@@ -116,16 +119,14 @@ document.addEventListener("DOMContentLoaded", function() {
       const data = await response.json();
       console.log(data);
 
-      
-
-
       // Loop through the data and create a card for each day
+      // Days are divided up into 3 hour segments so we step by 8
       for (let i = 0; i < data.list.length; i += 8) {
         const day = data.list[i];
         
         // Create the card element
         const card = document.createElement('div');
-        card.classList.add('card', 'text-white', 'bg-primary', 'mb-3', 'mx-auto', 'weather-card');
+        card.classList.add('card', 'text-white', 'bg-primary', 'mb-3', 'weather-card');
     
         // Create the card body element
         const cardBody = document.createElement('div');
@@ -192,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function() {
   
     // Append the weather icon to the heading
     cityDate.appendChild(weatherIcon);
-  
     document.getElementById("temperature").textContent = `Temp: ${temperature}°F`;
     document.getElementById("wind").textContent = `Wind: ${wind} MPH`;
     document.getElementById("humidity").textContent = `Humidity: ${humidity}%`;
