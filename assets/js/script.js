@@ -1,54 +1,77 @@
-var APIKey = "0a4b94a5f4f88fe22b1db9a21f0ba2cc";
-//global variable to hold search city
-var city;
-var coords;
-// Add event listener to table
-const searchBtn = document.getElementById("search-submit");
-searchBtn.addEventListener("click", grabSearch);
+document.addEventListener("DOMContentLoaded", function() {
+  var city;
+  var latitude;
+  var longitude;
+  var fiveDayForcast;
+  const APIKey = "0bd6340dd436be54dde5c8bc47376fd9";
+  const searchBtn = document.getElementById("search-submit");
+  searchBtn.addEventListener("click", main);
 
-// Function to grab the search term when the search button is clicked
-function grabSearch() {
-  const searchText = document.getElementById("search-text");
-  city = searchText.value.trim();
-  if (city){
-    mkCityBtn(city);
+  async function main() {
+    city = grabSearch();
+    if (city) {
+      const isValidCity = await fetchWeatherData(city);
+      if (isValidCity) {
+        const cityBtn = mkCityBtn(city);
+        appendCityBtn(cityBtn);
+        fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
+        fetchFiveDayForcast(fiveDayForcast);
+      } else {
+        console.log("Invalid city name");
+      }
+    }
   }
-};
 
+  function grabSearch() {
+    const searchText = document.getElementById("search-text");
+    return searchText.value.trim();
+  }
 
-//function that makes city history buttons
-//Also appends them to the aside
-function mkCityBtn(city) {
-  const cityBtn = document.createElement('button');
-  const aside = document.getElementById('aside');
-  cityBtn.id = city;
-  cityBtn.type = "submit";
-  cityBtn.classList.add('fs-4', 'ms-1', 'btn-primary', 'mb-3', 'w-75', 'p-2');
-  cityBtn.textContent = city;
-  aside.appendChild(cityBtn);
-  var currentForcast = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
-  fetchWeatherData(APIKey, currentForcast);
-};
+  function mkCityBtn(city) {
+    const cityBtn = document.createElement('button');
+    cityBtn.id = city;
+    cityBtn.type = "submit";
+    cityBtn.classList.add('fs-4', 'ms-1', 'btn-secondary', 'mb-3', 'w-75', 'p-2');
+    cityBtn.textContent = city;
+    return cityBtn;
+  }
 
-function fetchWeatherData(APIKey, currentForcast) {
-  fetch(currentForcast)
-  .then(function(response){
-    return response.json();
-  })
-  .then(function(data){
-    console.log(data)
-    coords = [data.coord.lat, data.coord.lon];
-    console.log(coords); 
-    console.log(coords[0]); 
-    console.log(coords[1]); 
-    return [coords[0], coords[1], data]
-  })
-}
-const latitude = coords;
-const longitude = coords;
+  function appendCityBtn(cityBtn) {
+    const aside = document.getElementById('aside');
+    aside.appendChild(cityBtn);
+  }
 
-var fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid={APIKey};
-`
-function fetchFiveDayForcast(){
-  fetch
-}
+  async function fetchWeatherData(city) {
+    var currentForcast = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
+    try {
+      const response = await fetch(currentForcast);
+      if (!response.ok) {
+        if (response.status === 404) {
+          return false;
+        }
+        throw new Error(`API error: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data);
+      latitude = data.coord.lat;
+      longitude = data.coord.lon;
+      return true;
+    } catch (error) {
+      console.error(`Error fetching weather data: ${error.message}`);
+      return false;
+    }
+  }
+
+  async function fetchFiveDayForcast(fiveDayForcast) {
+    try {
+      const response = await fetch(fiveDayForcast);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(`Error fetching five-day forecast: ${error.message}`);
+    }
+  }
+});
