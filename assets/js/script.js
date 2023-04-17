@@ -15,10 +15,13 @@ document.addEventListener("DOMContentLoaded", function() {
   var humidity;
   var iconCode;
   var iconURL;
+  var addedCities = []; // keep track of the cities added
 
   // Todo: need to hide this key 
   const APIKey = "0bd6340dd436be54dde5c8bc47376fd9";
   const searchBtn = document.getElementById("search-submit");
+
+  //Event Listener for search button
   searchBtn.addEventListener("click", function(){
     const searchText = document.getElementById("search-text");
     const cityName = searchText.value.trim();
@@ -36,7 +39,21 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
 
-  
+  function loadPage(){
+    const lastSearchedCity = localStorage.getItem('lastSearchedCity');
+    const storedCities = JSON.parse(localStorage.getItem('addedCities'));
+
+    if (storedCities) {
+      storedCities.forEach(city => {
+        const cityBtn = mkCityBtn(city);
+        appendCityBtn(cityBtn);
+      });
+    }
+
+    if (lastSearchedCity) {
+      main(lastSearchedCity);
+    }
+  }
 
   async function main(city) {
     // city = grabSearch();
@@ -48,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
         fiveDayForcast = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKey}`;
         fetchFiveDayForcast(fiveDayForcast);
         updateJumbotron(city, date, temperature, wind, humidity, iconURL)
+        localStorage.setItem('lastSearchedCity', city);
       } else {
         console.log("Invalid city name");
       }
@@ -77,8 +95,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // This function appends the city history buttons as children of the aside
   function appendCityBtn(cityBtn) {
-    const aside = document.getElementById('aside');
-    aside.appendChild(cityBtn);
+    if (!addedCities.includes(cityBtn.id)){
+      const aside = document.getElementById('aside');
+      aside.appendChild(cityBtn);
+      addedCities.push(cityBtn.id);
+      localStorage.setItem('addedCities', JSON.stringify(addedCities));
+    }
+
   }
 
   // This function fetches the current weather information for given city
@@ -111,6 +134,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // This function fetches the five day forcast informatiion
   async function fetchFiveDayForcast(fiveDayForcast) {
+    clearCards();
     try {
       const response = await fetch(fiveDayForcast);
       if (!response.ok) {
@@ -197,4 +221,13 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("wind").textContent = `Wind: ${wind} MPH`;
     document.getElementById("humidity").textContent = `Humidity: ${humidity}%`;
   };
+
+  //This function clears the cards
+  function clearCards(){
+    const container = document.getElementById('container');
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+  }
+  loadPage();
 });
