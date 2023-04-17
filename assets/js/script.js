@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
+  //global variables
   var city;
   var latitude;
   var longitude;
   var fiveDayForcast;
+  // Todo: need to hide this key 
   const APIKey = "0bd6340dd436be54dde5c8bc47376fd9";
   const searchBtn = document.getElementById("search-submit");
   searchBtn.addEventListener("click", main);
@@ -21,12 +23,13 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   }
-
+  // This function gets the text in the search input field
   function grabSearch() {
     const searchText = document.getElementById("search-text");
     return searchText.value.trim();
   }
 
+  // This function makes the city history buttons
   function mkCityBtn(city) {
     const cityBtn = document.createElement('button');
     cityBtn.id = city;
@@ -36,11 +39,13 @@ document.addEventListener("DOMContentLoaded", function() {
     return cityBtn;
   }
 
+  // This function appends the city history buttons as children of the aside
   function appendCityBtn(cityBtn) {
     const aside = document.getElementById('aside');
     aside.appendChild(cityBtn);
   }
 
+  // This function fetches the current weather information for given city
   async function fetchWeatherData(city) {
     var currentForcast = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
     try {
@@ -62,6 +67,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // This function fetches the five day forcast informatiion
+  // Todo: Note 5-day forcast information is provided in three hour blocks so we will need to manage that later
   async function fetchFiveDayForcast(fiveDayForcast) {
     try {
       const response = await fetch(fiveDayForcast);
