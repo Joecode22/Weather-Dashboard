@@ -1,6 +1,6 @@
 // Script File for Weather Dashboard
 // Joseph McKinney
-// Challenf
+// Challenge
 // 4/16/2023
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var iconURL;
   var addedCities = []; // keep track of the cities added
 
-  // Todo: need to hide this key 
+  //API Key Management and grabbing the search button
   var myKey = config.API_KEY;
   const APIKey = myKey;
   const searchBtn = document.getElementById("search-submit");
