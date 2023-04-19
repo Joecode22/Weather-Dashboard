@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
       latitude = data.coord.lat;
       longitude = data.coord.lon;
       date = new Date(data.dt * 1000).toLocaleDateString();
-      temperature = kelvinToCelsius(data.main.temp);
+      temperature =   kelvinToFahrenheit(data.main.temp);
       wind = data.wind.speed;
       humidity = data.main.humidity;
       iconCode = data.weather[0].icon;
